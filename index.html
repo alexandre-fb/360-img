@@ -5,8 +5,17 @@
     <meta charset="UTF-8" />
 
     <style>
+      body {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
       #zoomContainer {
         overflow: hidden;
+        width: 100%;
         max-width: 800px;
       }
   
@@ -58,39 +67,36 @@
     </script>
 
 <script>
-    // Defina o fator de escala inicial
-    let scale = 1;
+  // Defina o fator de escala inicial
+  let scale = 1;
 
-    // Elementos
-    const zoomContainer = document.getElementById('zoomContainer');
-    const cloudimageCanvas = document.querySelector('.cloudimage-360 canvas');
+  // Elementos
+  const zoomContainer = document.getElementById('zoomContainer');
+  const cloudimageCanvas = document.querySelector('.cloudimage-360 canvas');
 
-    // Adicione um ouvinte de roda ao contêiner de zoom
-    zoomContainer.addEventListener('wheel', function (event) {
-      // Ajuste o fator de escala com base na direção da roda (scroll)
-      scale += event.deltaY * -0.001;
+  // Adicione um ouvinte de roda ao contêiner de zoom
+  zoomContainer.addEventListener('wheel', function (event) {
+    // Ajuste o fator de escala com base na direção da roda (scroll)
+    scale += event.deltaY * -0.001;
 
-      // Garanta que a escala não fique abaixo de 1 (zoom mínimo)
-      scale = Math.max(scale, 1);
+    // Garanta que a escala não fique abaixo de 1 (zoom mínimo)
+    scale = Math.max(scale, 1);
 
-      // Atualize a transformação do estilo do canvas para aplicar o zoom
-      cloudimageCanvas.style.transform = `scale(${scale})`;
+    // Calcule a posição do cursor em relação ao centro do canvas
+    const centerX = cloudimageCanvas.clientWidth / 2;
+    const centerY = cloudimageCanvas.clientHeight / 2;
 
-      // Calcule a posição do cursor em relação ao canvas
-      const rect = cloudimageCanvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+    // Calcule o deslocamento para manter o ponto de clique no centro durante o zoom
+    const offsetX = (centerX / cloudimageCanvas.clientWidth - 0.5) * cloudimageCanvas.clientWidth;
+    const offsetY = (centerY / cloudimageCanvas.clientHeight - 0.5) * cloudimageCanvas.clientHeight;
 
-      // Calcule o deslocamento para manter o ponto de clique na mesma posição
-      const offsetX = (x / rect.width - 0.5) * cloudimageCanvas.clientWidth;
-      const offsetY = (y / rect.height - 0.5) * cloudimageCanvas.clientHeight;
+    // Atualize a transformação do estilo do canvas para aplicar o zoom
+    cloudimageCanvas.style.transform = `scale(${scale})`;
+    cloudimageCanvas.style.transformOrigin = `${offsetX}px ${offsetY}px`;
 
-      // Atualize a transformação para manter o ponto de clique na mesma posição
-      cloudimageCanvas.style.transformOrigin = `${offsetX}px ${offsetY}px`;
-
-      // Evite que o evento de roda se propague
-      event.preventDefault();
-    });
-  </script>
+    // Evite que o evento de roda se propague
+    event.preventDefault();
+  });
+</script>
   </body>
 </html>
