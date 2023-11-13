@@ -3,18 +3,39 @@
   <head>
     <title>js-cloudimage-360-view</title>
     <meta charset="UTF-8" />
+
+    <style>
+      #zoomContainer {
+        overflow: hidden;
+        max-width: 800px;
+      }
+  
+      #cloudimageCanvas {
+        transition: transform 0.3s ease;
+      }
+    </style>
   </head>
 
   <body>
+    <div id="zoomContainer">
+      <div
+        class="cloudimage-360"
+        id="gurkha-suv"
+        data-folder="./images/"
+        data-filename-x="img-{index}.jpg"
+        data-amount-x="40"
+        style="max-width: 800px;"
+      ></div>
+    </div>
     <!-- simply iniatialize it with class name "cloudimage-360", server folder path, file name and amount of images -->
-    <div
+    <!-- <div
       class="cloudimage-360"
       id="gurkha-suv"
       data-folder="./images/"
       data-filename-x="img-{index}.jpg"
       data-amount-x="40"
       style="max-width: 800px;"
-    ></div>
+    ></div> -->
     <!-- <div
       class="cloudimage-360"
       id="gurkha-suv"
@@ -25,6 +46,51 @@
       style="max-width: 800px;"
     ></div> -->
     <!-- Add script tag with CDN link to js-cloudimage-360-view lib after all content in body tag -->
+
+    <!-- <script >window.CI360.init();</script> -->
     <script src="https://cdn.scaleflex.it/plugins/js-cloudimage-360-view/latest/js-cloudimage-360-view.min.js"></script>
+    <script>
+      // Aguarde até que o DOM esteja completamente carregado
+      document.addEventListener('DOMContentLoaded', function () {
+        // Inicialize a biblioteca
+        window.CI360.init();
+      });
+    </script>
+
+<script>
+    // Defina o fator de escala inicial
+    let scale = 1;
+
+    // Elementos
+    const zoomContainer = document.getElementById('zoomContainer');
+    const cloudimageCanvas = document.querySelector('.cloudimage-360 canvas');
+
+    // Adicione um ouvinte de roda ao contêiner de zoom
+    zoomContainer.addEventListener('wheel', function (event) {
+      // Ajuste o fator de escala com base na direção da roda (scroll)
+      scale += event.deltaY * -0.001;
+
+      // Garanta que a escala não fique abaixo de 1 (zoom mínimo)
+      scale = Math.max(scale, 1);
+
+      // Atualize a transformação do estilo do canvas para aplicar o zoom
+      cloudimageCanvas.style.transform = `scale(${scale})`;
+
+      // Calcule a posição do cursor em relação ao canvas
+      const rect = cloudimageCanvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      // Calcule o deslocamento para manter o ponto de clique na mesma posição
+      const offsetX = (x / rect.width - 0.5) * cloudimageCanvas.clientWidth;
+      const offsetY = (y / rect.height - 0.5) * cloudimageCanvas.clientHeight;
+
+      // Atualize a transformação para manter o ponto de clique na mesma posição
+      cloudimageCanvas.style.transformOrigin = `${offsetX}px ${offsetY}px`;
+
+      // Evite que o evento de roda se propague
+      event.preventDefault();
+    });
+  </script>
   </body>
 </html>
