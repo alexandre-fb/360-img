@@ -77,7 +77,7 @@
 
   // Elementos
   const zoomContainer = document.getElementById('zoomContainer');
-  const images = document.querySelectorAll('.cloudimage-360 img');
+  const cloudimageCanvas = document.querySelector('.cloudimage-360 canvas');
 
   // Adicione um ouvinte de roda ao contêiner de zoom
   zoomContainer.addEventListener('wheel', function (event) {
@@ -87,10 +87,17 @@
     // Garanta que a escala não fique abaixo de 1 (zoom mínimo)
     scale = Math.max(scale, 1);
 
-    // Atualize a transformação do estilo da imagem para aplicar o zoom
-    images.forEach(image => {
-      image.style.transform = `scale(${scale})`;
-    });
+    // Calcule a posição do cursor em relação ao centro do canvas
+    const centerX = cloudimageCanvas.clientWidth / 2;
+    const centerY = cloudimageCanvas.clientHeight / 2;
+
+    // Calcule o deslocamento para manter o ponto de clique no centro durante o zoom
+    const offsetX = (centerX / cloudimageCanvas.clientWidth - 0.5) * cloudimageCanvas.clientWidth;
+    const offsetY = (centerY / cloudimageCanvas.clientHeight - 0.5) * cloudimageCanvas.clientHeight;
+
+    // Atualize a transformação do estilo do canvas para aplicar o zoom
+    cloudimageCanvas.style.transform = `scale(${scale})`;
+    cloudimageCanvas.style.transformOrigin = `center center`;
 
     // Evite que o evento de roda se propague
     event.preventDefault();
