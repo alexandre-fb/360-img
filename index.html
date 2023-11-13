@@ -36,6 +36,7 @@
         style="max-width: 800px;"
         data-spin-reverse
         autoplay
+        data-play-once
       ></div>
     </div>
     <!-- simply iniatialize it with class name "cloudimage-360", server folder path, file name and amount of images -->
@@ -94,7 +95,7 @@
 
     // Atualize a transformação do estilo do canvas para aplicar o zoom
     cloudimageCanvas.style.transform = `scale(${scale})`;
-    cloudimageCanvas.style.transformOrigin = `${offsetX}px ${offsetY}px`;
+    cloudimageCanvas.style.transformOrigin = `center center`;
 
     // Evite que o evento de roda se propague
     event.preventDefault();
